@@ -6,24 +6,23 @@ async function bootstrap() {
   const logger = new Logger('Bootstrap');
   const app = await NestFactory.create(AppModule);
 
-  // 1. Activation du CORS dynamique
-  // On autorise localhost pour le dev et plus tard ton domaine Vercel
+  // Activation du CORS configuré pour la production
   app.enableCors({
-    origin: true, // En développement, 'true' autorise tout. En prod, on pourra lister les domaines.
+    origin: [
+      'http://localhost:3001',
+      'https://heyama-frontend.vercel.app'
+    ],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true,
   });
 
-  // 2. Préfixe global (Optionnel mais recommandé)
-  // Permet d'avoir des URLs type : http://localhost:3000/api/objects
-  // app.setGlobalPrefix('api');
-
-  // 3. Gestion du Port dynamique pour le déploiement
-  // Render/Railway injectent une variable d'environnement PORT
+  // Utilisation du port fourni par Render ou 3000 par défaut
   const port = process.env.PORT || 3000;
   
-  await app.listen(port, '0.0.0.0'); // '0.0.0.0' est crucial pour les déploiements Cloud
+  // '0.0.0.0' est crucial pour que Render puisse router le trafic vers ton app
+  await app.listen(port, '0.0.0.0'); 
   
-  logger.log(`🚀 Application Backend lancée sur : http://localhost:${port}`);
+  logger.log(`🚀 Application Backend lancée sur le port : ${port}`);
+  logger.log(`Autorisation CORS pour : https://heyama-frontend.vercel.app`);
 }
 bootstrap();
