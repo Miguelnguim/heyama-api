@@ -75,8 +75,6 @@ export class ObjectsService {
 
   async delete(id: string) {
     const obj = await this.findOne(id);
-    
-    // Extraction du publicId pour Cloudinary
     const parts = obj.imageUrl.split('/');
     const lastPart = parts[parts.length - 1];
     const publicId = lastPart.split('.')[0];

@@ -21,22 +21,16 @@ export class ObjectsController {
     this.objectsGateway.emitObjectCreated(newObj);
     return newObj;
   }
-
-  // --- MÉTHODE MISE À JOUR : Supporte maintenant l'upload d'image ---
   @Patch(':id')
-  @UseInterceptors(FileInterceptor('image')) // Permet de récupérer le fichier envoyé via FormData
+  @UseInterceptors(FileInterceptor('image')) 
   async update(
     @Param('id') id: string,
-    @UploadedFile() file: Express.Multer.File, // Le nouveau fichier (optionnel)
+    @UploadedFile() file: Express.Multer.File,
     @Body('title') title: string,
     @Body('description') description: string,
   ) {
-    // 1. Appel du service avec les nouveaux paramètres
     const updatedObj = await this.objectsService.update(id, title, description, file);
-
-    // 2. Notification en temps réel (si activée)
-    this.objectsGateway.emitObjectCreated(updatedObj); // Tu peux créer une méthode spécifique 'emitObjectUpdated' si besoin
-
+    this.objectsGateway.emitObjectCreated(updatedObj);
     return updatedObj;
   }
 
